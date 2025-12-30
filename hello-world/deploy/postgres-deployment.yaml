@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: postgres-deplyment
+  labels:
+   app: hello-app
+spec:
+  selector:
+   matchLabels:
+    app: hello-app
+  strategy: 
+    type: recreate
+  template:
+    metadata:
+      labels: 
+        app: hello-app
+    spec:
+      containers:
+        - image: postgresql:17
+          name: postgres
+          env:
+            

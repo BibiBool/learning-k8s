@@ -1,0 +1,36 @@
+# https://taskfile.dev
+
+version: '3'
+
+env:
+  NAMESPACE: hello-world-namespace
+
+vars:
+  GREETING: Hello, World!
+
+tasks:      
+  create-namespace:
+    desc: "Create the Namespace for the deployment and set as default"
+    cmds:
+      - kubectl apply -f Namespace.yaml
+      - kubens ${NAMESPACE}
+    
+  deploy:
+    desc: "Create the deployment"
+    cmds:
+      - kubectl apply -f Deployment.yaml
+  
+  create-service:
+    desc: " Deploying the service"
+    cmds:
+     - kubectl apply -f Service.yaml
+  
+  deploy-postgres:
+    desc: "Deploting the postgreSQL container"
+    cmds:
+      - kubectl apply -f postgres-deployment.yaml
+  
+  delete-all:
+    desc: "Deletes the namespace and resources inside it"
+    cmds:
+      - kubectl delete -f Namespace.yaml

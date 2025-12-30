@@ -1,0 +1,18 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  build:
+    desc: "Build docker container"
+    cmds:
+      - docker build --no-cache -t bibibool/hello-world:v1.1.1 .
+  
+  push:
+    desc: Push docker image to dockerhub
+    cmds:
+      - docker push bibibool/hello-world:v1.1.1
+      

@@ -1,0 +1,41 @@
+{
+    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+    "packages": [
+        "act@latest",
+        "envsubst@latest",
+        "gh@latest",
+        "go-task@latest",
+        "go@latest",
+        "gum@latest",
+        "jq@latest",
+        "k9s@latest",
+        "kind@latest",
+        "kluctl@latest",
+        "ko@latest",
+        "kubectl@latest",
+        "kubectx@latest",
+        "kubent@latest",
+        "kubernetes-helm@latest",
+        "kustomize@latest",
+        "oras@latest",
+        "uv@latest",
+        "procps",
+        "python310@latest",
+        "tilt@latest",
+        "yq-go@latest"
+    ],
+    "shell": {
+      "init_hook": [
+        "python -m venv .venv",
+        ". .venv/bin/activate",
+        "pip install --upgrade pip",
+        "pip install fastapi uvicorn"
+      ],
+      "scripts": {
+        "test": [
+          "echo \"Error: no test specified\" && exit 1"
+        ]
+      }
+    }
+  }
+  
