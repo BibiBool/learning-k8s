@@ -1,0 +1,12 @@
+version: '3'
+
+env:
+  NAMESPACE: backend-namespace
+
+tasks:      
+  deploy:
+    desc: "Create the deployment"
+    cmds:
+      - kubectl apply -f Namespace.yaml
+      - kubens ${NAMESPACE}
+      - kubectl apply -f Fastapi-deployment.yaml
