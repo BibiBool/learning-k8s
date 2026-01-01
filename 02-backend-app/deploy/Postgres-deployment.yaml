@@ -1,22 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: postgres-deplyment
+  name: postgres-deployment
+  namespace: backend-namespace
   labels:
-   app: hello-app
+   app: postgres
 spec:
   selector:
    matchLabels:
-    app: hello-app
+    app: postgres
   strategy: 
-    type: recreate
+    type: Recreate
   template:
     metadata:
       labels: 
-        app: hello-app
+        app: postgres
     spec:
       containers:
-        - image: postgresql:17
+        - image: postgres:17
           name: postgres
-          env:
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: db-creds
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service 
+  namespace: backend-namespace
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
             
