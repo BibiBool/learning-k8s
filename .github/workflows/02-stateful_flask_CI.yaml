@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./2-backend-app-statefulset/api-flask
+        working-directory: ./02-backend-app-statefulset/api-flask
 
     steps:
       - name: Checkout Code
