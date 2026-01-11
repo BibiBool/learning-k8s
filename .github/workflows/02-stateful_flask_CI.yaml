@@ -4,14 +4,14 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - '02-backend-app-stateful/api-flask/**'
+      - '02-backend-app-statefulset/api-flask/**'
 
 jobs:
   unit-test:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./02-fastapi-postgres-app-stateful/api-flask
+        working-directory: ./2-backend-app-statefulset/api-flask
 
     steps:
       - name: Checkout Code
@@ -25,6 +25,8 @@ jobs:
       # 2. Run unittest
       - name: Install dependency
         run: |
-          export PYTHONPATH=$PYTHONPATH:$(pwd)
-          python3 -m unittest discover -v
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Set PYTHONPATH so python can find the 'src' module
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+          python3 -m unittest discover -v -s tests
 
