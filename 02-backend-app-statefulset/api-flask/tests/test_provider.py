@@ -27,7 +27,7 @@ Test Specifications:
 Test Infrastructure:
  - Framework: Pytest using the flask-pytest 'client' fixture.
  - Database Isolation: Tests must run within a transaction rollback or a fresh 
-   database instance to ensure idempotent results.
+   database instance to ensure idempotent results
 """
 import unittest
 from tests import status
