@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.git/
+test.db
+.pytest_cache/
+Tasfile.yaml
+docker-compose.yaml
+.devbox/
+deploy/

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: postgres-deployment
+  namespace: backend-namespace
+  labels:
+   app: postgres
+spec:
+  selector:
+   matchLabels:
+    app: postgres
+  strategy: 
+    type: Recreate
+  template:
+    metadata:
+      labels: 
+        app: postgres
+    spec:
+      containers:
+        - image: postgres:17
+          name: postgres
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: db-creds
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service 
+  namespace: backend-namespace
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+            
