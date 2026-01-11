@@ -1,4 +1,4 @@
-name: CI/CD with Devbox (App 02 - Local Kind)
+name: Flask Ci workflow 
 
 on:
   push:
