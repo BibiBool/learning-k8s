@@ -36,18 +36,44 @@ from src.provider import app
 class ProviderTest(unittest.TestCase):
     """Provider tests"""
 
+    def setUp(self):
+        self.client = app.test_client()
+        from src.provider import PROVIDERS
+        PROVIDERS.clear()
+        PROVIDERS.extend([
+        {"id": 1, "name": "Sanite Belair", "speciality": "Pediatry"},
+        {"id": 2, "name": "Catherine Flon", "speciality": "Surgery"},
+        {"id": 3, "name": "Toussaint Louverture", "speciality": "Podology"},
+    ])
+        
+
     def test_get_providers(self):
         """It should get the list of providers"""
-        client = app.test_client()
-        result = client.get("/providers")
+        result = self.client.get("/providers")
         self.assertEqual(result.status_code, status.HTTP_200_OK)
 
     def test_create_a_provider(self):
         """It should create a provider"""
-        client = app.test_client()
-        result = client.post("/providers")
+        new_provider = {
+            "id": 4, 
+            "name": "Jean-Jacques Dessalines", 
+            "specialty": "General Medicine"
+        }
+        result = self.client.post("/providers", json=new_provider)
         self.assertEqual(result.status_code, status.HTTP_201_CREATED)
 
+    def test_duplicate_provider(self):
+        """It should return an error for duplicates"""
+        new_provider = {
+            "id": 4, 
+            "name": "Jean-Jacques Dessalines", 
+            "specialty": "General Medicine"
+        }
+        result = self.client.post("/providers", json=new_provider)
+        self.assertEqual(result.status_code, status.HTTP_201_CREATED)
+
+        result = self.client.post("/providers", json=new_provider)
+        self.assertEqual(result.status_code, status.HTTP_409_CONFLICT)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

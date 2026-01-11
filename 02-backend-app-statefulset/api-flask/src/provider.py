@@ -1,12 +1,12 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from http import HTTPStatus
 
 app = Flask(__name__)
 
 PROVIDERS = [
-    {"id": 1, "name": "Sanite Belair", "speciality": "Pediatry"},
-    {"id": 2, "name": "Catherine Flon", "speciality": "Surgery"},
-    {"id": 3, "name": "Toussaint Louverture", "speciality": "Podology"},
+    {"id": 1, "name": "Sanite Belair", "specialty": "Pediatry"},
+    {"id": 2, "name": "Catherine Flon", "specialty": "Surgery"},
+    {"id": 3, "name": "Toussaint Louverture", "specialty": "Podology"},
 ]
 
 @app.route("/providers", methods=["GET"])
@@ -19,7 +19,18 @@ def get_providers():
 def create_provider():
     """Create a provider"""
     app.logger.info("Creating a provider")
-    return jsonify(PROVIDERS), HTTPStatus.CREATED
+
+    new_provider = request.get_json()
+    app.logger.info(f"new provider: {new_provider}")
+
+    for provider in PROVIDERS:
+        if provider["id"] == new_provider["id"]:
+            return jsonify(
+                {"message": f"Provider {new_provider['id']} already exists"}), HTTPStatus.CONFLICT
+    
+    PROVIDERS.append(new_provider)
+
+    return jsonify(new_provider), HTTPStatus.CREATED
 
 
 if __name__ == "__main__":
