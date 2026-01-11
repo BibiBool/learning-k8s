@@ -1,0 +1,30 @@
+name: CI/CD with Devbox (App 02 - Local Kind)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '02-fastapi-postgres-app-stateful/api-flask/**'
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./02-fastapi-postgres-app-stateful/api-flask
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10" 
+
+      # 2. Run unittest
+      - name: Install dependency
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
+          python3 -m unittest discover -v
+

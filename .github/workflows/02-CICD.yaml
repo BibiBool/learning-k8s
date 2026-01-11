@@ -1,0 +1,55 @@
+name: CI/CD with Devbox (App 02 - Local Kind)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '02-fastapi-postgres-app-statefulset/**'
+
+jobs:
+  test-and-deploy-local:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./02-fastapi-postgres-app
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Install Devbox
+      - name: Install Devbox
+        uses: jetify-com/devbox-install-action@v0.12.0
+        with:
+          project-path: './02-fastapi-postgres-app'
+          enable-cache: 'true'
+
+      # 2. Login to Docker Hub
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | devbox run -- docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      # 3. Build & Push Image
+      - name: Build and Push
+        run: |
+          devbox run -- docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app-02:${{ github.sha }} .
+          devbox run -- docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app-02:${{ github.sha }}
+
+      # 4. Setup Kind Cluster (Kubernetes-in-Docker) inside the runner
+      - name: Create Kind Cluster
+        run: |
+          devbox run -- kind create cluster --name devbox-cluster
+
+      # 5. Deploy to the local Kind Cluster
+      - name: Deploy to Local Kind
+        run: |
+          # Apply your manifests
+          devbox run -- kubectl apply -f k8s/postgres-deployment.yaml
+          devbox run -- kubectl apply -f k8s/fastapi-deployment.yaml
+          
+          # Update the image to the one we just pushed
+          devbox run -- kubectl set image deployment/fastapi-deployment \
+            fastapi-container=${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app-02:${{ github.sha }}
+          
+          # Verify deployment
+          devbox run -- kubectl rollout status deployment/fastapi-deployment --timeout=90s
