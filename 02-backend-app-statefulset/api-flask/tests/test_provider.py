@@ -22,7 +22,7 @@ Test Specifications:
  3. GET /providers/<name>/availability
     - Success (200): Returns available ISO-8601 time slots for a valid provider name.
     - Success (200): Returns an empty list if the provider has no available slots.
-    - Error (404): Returns error if the provider name does not exist.
+    - Error (404): Returns error if the provider name does not exist
 
 Test Infrastructure:
  - Framework: Pytest using the flask-pytest 'client' fixture.
