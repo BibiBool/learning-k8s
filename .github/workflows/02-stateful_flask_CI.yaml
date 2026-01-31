@@ -7,7 +7,7 @@ on:
       - '02-backend-app-statefulset/api-flask/**'
 
 jobs:
-  unit-test:
+  build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -15,11 +15,21 @@ jobs:
 
     steps:
         - uses: actions/checkout@v5
-        - name: Set up python
           
-          uses: actions/setup-python@v5
+        - name: Set up python
+          uses: actions/setup-python@v4
           with:
             python-version: "3.10"
 
-        - name: Display python version
-          run: python -c "import sys; print(sys.version)"
+        - name: Install dependencies
+          run: |
+            pip install --upgrade pip
+            pip installl -r requirements.txt
+
+        - name: Run tests with pytest
+          run: pytest --cov=src --cov-report=xml 
+
+        - name: Upload coverage to Codecov
+          uses: codecov/codecov-action@v3
+          with:
+            directory: ./02-backend-app-statefulset/api-flask/
