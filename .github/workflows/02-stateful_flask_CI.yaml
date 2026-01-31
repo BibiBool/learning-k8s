@@ -17,20 +17,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+        
+      - name: Install dependency
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Set PYTHONPATH so python can find the 'src' module
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+        
       - name: Linting with flake8
         run: |
           flake8 src --count --max-complexity=10 --max-line-lenght=127 --statitics
-
-      #- name: Set up python
-      #  uses: actions/setup-python@v4
-      #  with:
-      #    python-version: "3.10"
-
-      ## 2. Run unittest
-      #- name: Install dependency
-      #  run: |
-      #    if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      #    # Set PYTHONPATH so python can find the 'src' module
-      #    export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-      #    python3 -m unittest discover -v -s tests
-
