@@ -29,51 +29,59 @@ Test Infrastructure:
  - Database Isolation: Tests must run within a transaction rollback or a fresh 
    database instance to ensure idempotent results.
 """
-import unittest
+import pytest
 from tests import status
-from src.provider import app
+from src.provider import app, PROVIDERS
 
-class ProviderTest(unittest.TestCase):
-    """Provider tests"""
-
-    def setUp(self):
-        self.client = app.test_client()
-        from src.provider import PROVIDERS
-        PROVIDERS.clear()
-        PROVIDERS.extend([
+@pytest.fixture
+def client():
+    """Fixture to set up the Flask test client and reset data"""
+    # Setup: This runs before each test
+    app.config.update({"TESTING": True})
+    
+    # Resetting the global list (your previous setUp logic)
+    PROVIDERS.clear()
+    PROVIDERS.extend([
         {"id": 1, "name": "Sanite Belair", "speciality": "Pediatry"},
         {"id": 2, "name": "Catherine Flon", "speciality": "Surgery"},
         {"id": 3, "name": "Toussaint Louverture", "speciality": "Podology"},
     ])
-        
+    
+    with app.test_client() as client:
+        yield client
+    
+    # Teardown (optional): Logic here runs after each test
 
-    def test_get_providers(self):
-        """It should get the list of providers"""
-        result = self.client.get("/providers")
-        self.assertEqual(result.status_code, status.HTTP_200_OK)
+######################################################################
+#  T E S T   C A S E S
+######################################################################
 
-    def test_create_a_provider(self):
-        """It should create a provider"""
-        new_provider = {
-            "id": 4, 
-            "name": "Jean-Jacques Dessalines", 
-            "specialty": "General Medicine"
-        }
-        result = self.client.post("/providers", json=new_provider)
-        self.assertEqual(result.status_code, status.HTTP_201_CREATED)
+def test_get_providers(client):
+    """It should get the list of providers"""
+    result = client.get("/providers")
+    assert result.status_code == status.HTTP_200_OK
 
-    def test_duplicate_provider(self):
-        """It should return an error for duplicates"""
-        new_provider = {
-            "id": 4, 
-            "name": "Jean-Jacques Dessalines", 
-            "specialty": "General Medicine"
-        }
-        result = self.client.post("/providers", json=new_provider)
-        self.assertEqual(result.status_code, status.HTTP_201_CREATED)
+def test_create_a_provider(client):
+    """It should create a provider"""
+    new_provider = {
+        "id": 4, 
+        "name": "Jean-Jacques Dessalines", 
+        "specialty": "General Medicine"
+    }
+    result = client.post("/providers", json=new_provider)
+    assert result.status_code == status.HTTP_201_CREATED
 
-        result = self.client.post("/providers", json=new_provider)
-        self.assertEqual(result.status_code, status.HTTP_409_CONFLICT)
+def test_duplicate_provider(client):
+    """It should return an error for duplicates"""
+    new_provider = {
+        "id": 4, 
+        "name": "Jean-Jacques Dessalines", 
+        "specialty": "General Medicine"
+    }
+    # First request
+    result = client.post("/providers", json=new_provider)
+    assert result.status_code == status.HTTP_201_CREATED
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    # Duplicate request
+    result = client.post("/providers", json=new_provider)
+    assert result.status_code == status.HTTP_409_CONFLICT

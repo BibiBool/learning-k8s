@@ -4,14 +4,14 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - '02-fastapi-postgres-app-statefulset/**'
+      - '02-backend-app-statefulset/api-fastapi/**'
 
 jobs:
   test-and-deploy-local:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./02-fastapi-postgres-app
+        working-directory: ./02-backend-app-statefulset/api-fastapi/
 
     steps:
       - name: Checkout Code
@@ -21,7 +21,7 @@ jobs:
       - name: Install Devbox
         uses: jetify-com/devbox-install-action@v0.12.0
         with:
-          project-path: './02-fastapi-postgres-app'
+          project-path: './02-backend-app-statefulset/api-fastapi/'
           enable-cache: 'true'
 
       # 2. Login to Docker Hub
