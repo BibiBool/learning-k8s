@@ -82,6 +82,6 @@ def test_duplicate_provider(client):
     result = client.post("/providers", json=new_provider)
     assert result.status_code == status.HTTP_201_CREATED
 
-    # Duplicate requests
+    # Duplicate request
     result = client.post("/providers", json=new_provider)
     assert result.status_code == status.HTTP_409_CONFLICT
