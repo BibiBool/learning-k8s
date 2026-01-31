@@ -14,7 +14,7 @@ PROVIDERS = [
 
 @app.route("/", methods=["GET"])
 def home():
-    """Welcome page"""
+    """Home page"""
     app.logger.info("Getting the homepage")
     return "Welcome to the appointment service"
 
