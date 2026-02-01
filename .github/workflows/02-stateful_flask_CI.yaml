@@ -22,7 +22,7 @@ jobs:
   
   unit-tests:
     needs: linting-and-formatting
-    runs-on: ubuntu latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./02-backend-app-statefulset/api-flask
