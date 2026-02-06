@@ -10,7 +10,9 @@ line-length = 88
 # E = pycodestyle errors, F = Pyflakes, I = isort (import sorting)
 select = ["E", "F", "I"]
 # This tells Ruff to ignore common non-issues if you prefer
-ignore = []
+ignore = ["__pycache__"]
+fixable = ["ALL"]
+unfixable = []
 
 [tool.ruff.lint.isort]
 # Ensures your imports are sorted professionally

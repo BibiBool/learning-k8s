@@ -1,6 +1,7 @@
 import logging
-from flask import Flask, jsonify, request
 from http import HTTPStatus
+
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ PROVIDERS = [
     {"id": 2, "name": "Catherine Flon", "specialty": "Surgery"},
     {"id": 3, "name": "Toussaint Louverture", "specialty": "Podology"},
 ]
+
 
 @app.route("/", methods=["GET"])
 def home():
@@ -25,6 +27,7 @@ def get_providers():
     app.logger.info("Guetting the list of providers")
     return jsonify(PROVIDERS), HTTPStatus.OK
 
+
 @app.route("/providers", methods=["POST"])
 def create_provider():
     """Create a provider"""
@@ -34,18 +37,23 @@ def create_provider():
 
     if not new_provider or "id" not in new_provider:
         app.logger.warning("Failed creation: Missing provider ID in payload")
-        return jsonify({"error": "Bad Request: 'id' is required"}), HTTPStatus.BAD_REQUEST
+        return jsonify(
+            {"error": "Bad Request: 'id' is required"}
+        ), HTTPStatus.BAD_REQUEST
 
     for provider in PROVIDERS:
         if provider["id"] == new_provider["id"]:
-            app.logger.warning(f"Creation blocked: Provider ID {new_provider['id']} already exists")
-            return jsonify(
-                {"message": "Already exists"}), HTTPStatus.CONFLICT
-    
+            app.logger.warning(
+                f"Creation blocked: Provider ID {new_provider['id']} already exists"
+            )
+            return jsonify({"message": "Already exists"}), HTTPStatus.CONFLICT
+
     PROVIDERS.append(new_provider)
 
-    app.logger.info(f"Provider {new_provider['id']} ('{new_provider['name']}') created successfully")
-    
+    app.logger.info(
+        f"Provider {new_provider['id']} ('{new_provider['name']}') created successfully"
+    )
+
     return jsonify(new_provider), HTTPStatus.CREATED
 
 

@@ -143,6 +143,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+IMPLEMENTATION_PLAN.md
 
 
 # Spyder project settings
