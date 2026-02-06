@@ -1,4 +1,7 @@
-name: Flask Ci workflow 
+name: Flask Ci workflow
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
@@ -15,10 +18,14 @@ jobs:
 
     steps:
         - uses: actions/checkout@v5
+        - name: setup python
+          uses: actions/setup-python@v5
+          with:
+            python-version: "3.10.19"
         - name: Install Ruff
           run: pip install ruff
-        - name: Lint with Ruff
-          run: ruff check .
+        - name: Lint code with Ruff
+          run: ruff check --ouput-format=github --target-version=py39
   
   unit-tests:
     needs: linting-and-formatting
@@ -29,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10.19"
           cache: 'pip'
@@ -37,3 +44,39 @@ jobs:
         run: pip install -r requirements.txt 
       - name: run tests
         run: pytest
+
+  build-image:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    outputs: 
+      sha_short: ${{ steps.vars.outputs.sha_short }}
+    defaults:
+      run:
+        working-directory: ./02-backend-app-statefulset/api-flask
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUPUT
+
+      - name: Setup Docker Build
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./02-backend-app-statefulset/api-flask
+          push: true
+          tags: |
+            my-repo/flask-api:latest
+            my-repo/flask-api:${{ steps.vars.outputs.sha_short }}
+          cache-from: type=ga
+          cache-to: type=ga,mode=max
