@@ -25,7 +25,7 @@ jobs:
         - name: Install Ruff
           run: pip install ruff
         - name: Lint code with Ruff
-          run: ruff check --ouput-format=github --target-version=py39
+          run: ruff check .
   
   unit-tests:
     needs: linting-and-formatting
