@@ -3,3 +3,6 @@ __pycache__
 .git
 .env
 .ruff_cache
+.pytest_cache
+IMPLEMENTATION_PLAN.md
+/tests

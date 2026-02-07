@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
 
-COPY --chown=appuser:appuser src ./src/
+COPY --chown=appuser:appuser . .
 
 USER appuser
 
@@ -28,4 +28,4 @@ ENV FLASK_APP=src.provider.py
 
 EXPOSE 5000
 
-CMD ["python", "src/provider.py"]
+CMD ["gunicron", "-c", "gunicorn.config.py", "wsgi:app"]
