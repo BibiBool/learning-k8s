@@ -16,6 +16,6 @@ test: ## Run tests with coverage
 build: ## Build the production Docker image
 	docker build -t $(DOCKER_IMAGE):latest .
 
-clean: ## Remove temporary files
+clean: ## Remove temporary files.
 	rm -rf .pytest_cache .coverage htmlcov
 	find . -type d -name "__pycache__" -exec rm -rf {} +
