@@ -1,4 +1,7 @@
 name: CI/CD with Devbox (App 02 - Local Kind)
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
