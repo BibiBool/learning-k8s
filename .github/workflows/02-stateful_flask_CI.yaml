@@ -92,7 +92,8 @@ jobs:
           context: ./02-backend-app-statefulset/api-flask
           push: true
           tags: |
-            my-repo/flask-api:latest
-            my-repo/flask-api:${{ steps.vars.outputs.sha_short }}
+            bibiool/sanite:latest
+            bibiool/sanite:v1.01
+            bibiool/sanite:${{ steps.vars.outputs.sha_short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
