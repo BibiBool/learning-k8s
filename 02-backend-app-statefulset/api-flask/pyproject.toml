@@ -26,3 +26,17 @@ quote-style = "double"
 
 # Like Black, indent with spaces, rather than tabs.
 indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# --cov points to the source code folder
+# --cov-report term-missing shows which specific lines aren't tested in the console
+addopts = "--cov=src --cov-report=term-missing --cov-report=html --cov-report=xml"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80  # The build will fail if coverage is below 80%
