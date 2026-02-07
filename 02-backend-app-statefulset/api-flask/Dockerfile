@@ -28,4 +28,4 @@ ENV FLASK_APP=src.provider.py
 
 EXPOSE 5000
 
-CMD ["gunicron", "-c", "gunicorn.config.py", "wsgi:app"]
+CMD ["gunicorn", "-c", "gunicorn.config.py", "wsgi:app"]

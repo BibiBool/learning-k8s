@@ -14,6 +14,19 @@ PROVIDERS = [
 ]
 
 
+@app.route("/healthz", methods=["GET"])
+def healthz():
+    """Liveness probe: Check if the process is responding."""
+    return jsonify({"status": "healthy"}), 200
+
+@app.route("/readyz")
+def readyz():
+    """Readiness probe: Check if dependencies (DB, Cache) are available."""
+    # Logic here: e.g., try a simple DB query
+    # if database_is_down:
+    #     return jsonify({"status": "unavailable"}), 503
+    return jsonify({"status": "ready"}), 200
+
 @app.route("/", methods=["GET"])
 def home():
     """Home page"""
