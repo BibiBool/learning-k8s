@@ -26,9 +26,19 @@ jobs:
           run: pip install ruff
         - name: Lint code with Ruff
           run: ruff check .
+
+  security-sast:
+    needs: linting-and-formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run Bandit
+        run: |
+          pip install bandit
+          bandit -r ./02-backend-app-statefulset/api-flask -ll
   
   unit-tests:
-    needs: linting-and-formatting
+    needs: security-sast
     runs-on: ubuntu-latest
     defaults:
       run:
